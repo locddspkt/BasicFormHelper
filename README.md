@@ -46,6 +46,12 @@ $formHelper = BasicFormHelper\FormHelper::getInstance();
 </html>
 ```
 
+**Example Scripts**
+
+<ul>
+<li>Basic usage: <strong>./examples/select_example.php</strong></li>
+</ul>
+
 ## Keywords
 
 Forms, User Feedback, Helper, Select, Input, PHP 7 Compatible, PHP 7+.
