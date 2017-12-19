@@ -278,6 +278,9 @@ class FormHelper_Select_Test extends TestCase {
         }
 
         $this->assertTrue($checked, 'Match all thev attributes');
+
+        //for test build invalid on travis-ci.org
+        $this->assertTrue(false, 'Invalid test');
     }
 
     private function getRandomText20() {
