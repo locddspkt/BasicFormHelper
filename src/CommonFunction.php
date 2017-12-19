@@ -1,7 +1,5 @@
 <?php
 
-namespace BasicFormHelper;
-
 if (!defined('abcdefghijklmnopqrstuvwxyz')) define('abcdefghijklmnopqrstuvwxyz', 'abcdefghijklmnopqrstuvwxyz');
 if (!defined('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) define('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 if (!defined('_0123456789')) define('_0123456789', '_0123456789');

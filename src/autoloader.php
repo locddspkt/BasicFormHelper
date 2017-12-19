@@ -1,6 +1,6 @@
 <?php
 $mapping = array(
-    //later use, change the namespace from app --> App
+    'CommonFunction' => __DIR__ . '/CommonFunction.php',
     'BasicFormHelper\FormHelper' => __DIR__ . '/FormHelper.php',
 );
 

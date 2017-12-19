@@ -24,7 +24,7 @@ class FormHelper {
      *  [['value' => 'value 1','text' => 'text 1, 'attribute1' => 'attrib value']...]
      * @param $attributes = [attrib => value]
      * some attributes is used for other reason
-     * 'selected_value'
+     * 'selected'
      * 'empty' =>
      *      true: --> empty value and empty text
      *      false: --> do not add the empty option
@@ -32,11 +32,11 @@ class FormHelper {
      *      array['value','text','attrib',...] -> an option
      */
     public function select($fieldName, $options = [], $attributes = []) {
-        $definedAttributes = ['selected_value', 'empty'];
+        $definedAttributes = ['selected', 'empty'];
 
         //1. build begin
         $selectBegin = '<select ';
-        if (!empty($fieldName)) {
+        if ($fieldName !== false) {
             $selectBegin .= " name='$fieldName' ";
         }
 
@@ -46,25 +46,41 @@ class FormHelper {
         }
 
         $selected = false;
-        if (isset($attributes['selected_value'])) {
-            $selected = $attributes['selected_value'];
+        if (isset($attributes['selected'])) {
+            $selected = $attributes['selected'];
         }
+
+        //selected can not be true
+        if ($selected === true) $selected = '1';
 
         $selectBegin .= '>';
 
         //2. build options
-        $selectOptionData = $this->getOptionListFromArray($options, $selected); //temporary do not support options for
-//        $selectOptionData = '';
+        $selectOptionData = '';
+        //check the empty field
+        if (isset($attributes['empty'])) {
+            $empty = $attributes['empty'];
+            if ($empty === false) {
+                //do nothing
+            } else if ($empty === true) {
+                //add one empty
+                $selectOptionData .= $this->buildOneOption($empty) . PHP_EOL;
+            } else {
+                $selectOptionData .= $this->buildOneOption($empty) . PHP_EOL;
+            }
+        }
+        //other options
+        $selectOptionData .= $this->getOptionListFromArray($options, $selected);
 
         //3. end select
         $selectEnd = '</select>';
 
-        $select = $selectBegin . PHP_EOL . $selectOptionData . PHP_EOL . $selectEnd;
+        $select = PHP_EOL . $selectBegin . PHP_EOL . $selectOptionData . PHP_EOL . $selectEnd;
         return $select;
     }
 
     /***
-     * return <option value=''>display</option>
+     * return <option value='value' attrubute_1='blabla'>display</option>
      * @param $items supported types
      *  [value1,value2,value3] (no key)
      *  ['value1' => 'text 1','value2' => 'text 2'...] (key and text)
@@ -79,46 +95,25 @@ class FormHelper {
         $hasKey = self::checkArrayHasKeys($items);
 
         $optionItems = '';
+        $index = 0;
         foreach ($items as $key => $item) {
-            $optionItemBegin = '<option ';
-
-            $value = '';
-            $text = '';
+            //has key
             if ($hasKey) {
-                $value = $key;
-                $text = $item;
+                $optionItems .= $this->buildOneOption(['value' => $key, 'text' => $item, 'selected' => $selected]);
             }
             else {
-                if (!is_array($item)) {
-                    $value = $text = $item;
+                if (is_array($item)) {
+                    $optionItems .= $this->buildOneOption(array_merge($item, ['selected' => $selected]));
                 }
                 else {
-                    $value = $item['value'];
-                    $text = $item['text'];
+                    $optionItems .= $this->buildOneOption(['text' => $item, 'selected' => $selected]);
                 }
             }
 
-            //1. build value
-            $optionItemBegin .= " value='$value'";
-
-            //2. build selected
-            if ($selected !== false) {
-                if ($selected == $value) {
-                    $optionItemBegin .= ' selected ';
-                }
+            //do not enter and the end of the options
+            if ($index++ < count($items) - 1) {
+                $optionItems .= PHP_EOL;
             }
-
-            //3. build attributes //only when item is array and get all other field except 'value','text'
-            if (empty($options)) $options = [];
-            foreach ($options as $attribute => $value) {
-                $optionItemBegin .= " $attribute='$value' ";
-            }
-
-            $optionItemBegin .= '>';
-            $optionItemDisplay = $text;
-            $optionItemEnd = '</option>';
-
-            $optionItems .= $optionItemBegin . $optionItemDisplay . $optionItemEnd . PHP_EOL;
         }
 
         return $optionItems;
@@ -129,9 +124,12 @@ class FormHelper {
      * false --> return empty string
      * true --> return empty option
      * string, number -> non-value, text = string
-     * array('value','text','other_attribs')
+     * array('value','text','other_attribs') don't need to have all, can be 'value' only, 'text' only, 'other_attributes' only
+     *  'value' => value of the option
+     *  'text' text of the option
+     *  'selected' add selected if this value equals to 'value' (set to true or false to force turn on and off
      */
-    private function buildOneOption($item) {
+    public function buildOneOption($item) {
         $emptyOption = '<option></option>';
         if ($item === false) return '';
         if ($item === true) return $emptyOption;
@@ -149,16 +147,37 @@ class FormHelper {
         }
 
         if (isset($item['selected'])) {
-            $selectedValue = $item['selected'];
-            if ($selectedValue == $value) {
+            $selected = $item['selected'];
+            if ($selected === true) {
+                $optionItemBegin .= ' selected ';
+            }
+            else if ($selected === false) {
+                //do nothing
+            }
+            else if ($selected == $value) {
                 $optionItemBegin .= ' selected ';
             }
         }
 
         //build options
+        foreach ($item as $key=>$value) {
+            //do not generate with some defined ['value', 'text', 'selected'];
+            if (in_array($key, ['value','text','selected'])) continue;
+
+            $optionItemBegin .= " $key='$value'";
+        }
+
+        $optionItemBegin .= '>';
+
+        //build text
+        $optionItemDisplay = '';
+        if (isset($item['text'])) {
+            $optionItemDisplay = $item['text'];
+        }
 
         $optionItemEnd = '</option>';
 
+        return $optionItemBegin . $optionItemDisplay . $optionItemEnd;
 
     }
 
