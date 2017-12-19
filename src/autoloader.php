@@ -1,6 +1,6 @@
 <?php
 $mapping = array(
-    'CommonFunction' => __DIR__ . '/CommonFunction.php',
+    'BasicFormHelper\CommonFunction' => __DIR__ . '/CommonFunction.php',
     'BasicFormHelper\FormHelper' => __DIR__ . '/FormHelper.php',
 );
 

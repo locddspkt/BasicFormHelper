@@ -5,7 +5,6 @@ namespace BasicFormHelper;
 
 
 use PHPUnit\Framework\TestCase;
-use CommonFunction;
 
 include_once __DIR__ . '/phpunit-autoloader.php';
 
