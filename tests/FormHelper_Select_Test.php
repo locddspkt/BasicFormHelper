@@ -36,7 +36,7 @@ class FormHelper_Select_Test extends TestCase {
         for ($i = 0; $i < $count; $i++) {
             $item = new \stdClass();
             $item->id = random_int(1, 100);
-            $item->name = $this->getRandomText20();
+            $item->name = TestUtils::getRandomText20();
             $list[] = $item;
         }
 
@@ -63,7 +63,7 @@ class FormHelper_Select_Test extends TestCase {
         for ($i = 0; $i < $count; $i++) {
             $item = new \stdClass();
             $item->value_of_the_option = random_int(1, 100);
-            $item->text_of_the_option = $this->getRandomText20();
+            $item->text_of_the_option = TestUtils::getRandomText20();
             $list[] = $item;
         }
 
@@ -94,7 +94,7 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertNotContains('</option>', $select, 'Do not have any options');
 
         //select with random valid name
-        $name = $this->getRandomText20();
+        $name = TestUtils::getRandomText20();
         $select = $formHelper->select($name);
         $this->assertContains(' name=', $select);
         $this->assertContains($name, $select);
@@ -105,7 +105,7 @@ class FormHelper_Select_Test extends TestCase {
         $optionCount = random_int(1,50);
         $options = [];
         for ($i=1;$i<=$optionCount;$i++) {
-            $options[] = $this->getRandomText20();
+            $options[] = TestUtils::getRandomText20();
         }
         $select = $formHelper->select($name, $options);
         $this->assertContains('<option', $select, 'Do not have any options');
@@ -131,15 +131,15 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertSame($optionCount +1, substr_count($select, '</option>'), 'Equal with item count');
 
         //have the default row
-        $select = $formHelper->select($name, $options,['empty' => ['value' => $this->getRandomText20(), 'text' => $this->getRandomText20()]]);
+        $select = $formHelper->select($name, $options,['empty' => ['value' => TestUtils::getRandomText20(), 'text' => TestUtils::getRandomText20()]]);
         $this->assertSame($optionCount +1, substr_count($select, '</option>'), 'Equal with item count');
 
         //random options with random keys
         $options = [];
         for ($i=1;$i<=$optionCount;$i++) {
             do {
-                $key = $this->getRandomText20();
-                $text = $this->getRandomText20();
+                $key = TestUtils::getRandomText20();
+                $text = TestUtils::getRandomText20();
             } while (in_array($key, array_keys($options)) || in_array($text, $options));
             $options[$key] = $text;
         }
@@ -168,8 +168,8 @@ class FormHelper_Select_Test extends TestCase {
         $optionsInSelect = [];
         for ($i=1;$i<=$optionCount;$i++) {
             do {
-                $key = $this->getRandomText20();
-                $text = $this->getRandomText20();
+                $key = TestUtils::getRandomText20();
+                $text = TestUtils::getRandomText20();
             } while (in_array($key, array_keys($options)) || in_array($text, $options));
             $options[$key] = $text;
             $optionsInSelect[] = ['value' => $value, 'text' => $text];
@@ -211,7 +211,7 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertSame('<option></option>', $option, 'Empty option');
 
         //item = random string --> non-value option
-        $option = $formHelper->buildOneOption($this->getRandomText20());
+        $option = $formHelper->buildOneOption(TestUtils::getRandomText20());
         $this->assertNotContains('value=', $option, 'Non-value option');
         $this->assertNotContains('></option>', $option, 'Option has text');
 
@@ -221,19 +221,19 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertNotContains('></option>', $option, 'Option has text');
 
         //item = array text only --> non-value option
-        $option = $formHelper->buildOneOption(['text' => $this->getRandomText20()]);
+        $option = $formHelper->buildOneOption(['text' => TestUtils::getRandomText20()]);
         $this->assertNotContains('value=', $option, 'Non-value option');
         $this->assertNotContains('></option>', $option, 'Option has text');
 
         //item = array value only --> empty valuable
-        $option = $formHelper->buildOneOption(['value' => $this->getRandomText20()]);
+        $option = $formHelper->buildOneOption(['value' => TestUtils::getRandomText20()]);
         $this->assertContains('value=', $option, 'Option has value');
         $this->assertContains('></option>', $option, 'Option do not have text');
 
         //item with selected
-        $value = $this->getRandomText20();
+        $value = TestUtils::getRandomText20();
         do {
-            $text = $this->getRandomText20(); //get text until not same
+            $text = TestUtils::getRandomText20(); //get text until not same
         } while ($text == $value);
         //selected = false -> do not add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => false]);
@@ -260,13 +260,13 @@ class FormHelper_Select_Test extends TestCase {
         $attributes = [];
         for ($i=1;$i<=$count;$i++) {
             do {
-                $attribute = $this->getRandomText20();
+                $attribute = TestUtils::getRandomText20();
             } while (in_array($attribute,array_keys($attributes)));
 
-            $attributes[$attribute] = $this->getRandomText20();
+            $attributes[$attribute] = TestUtils::getRandomText20();
         }
 
-        $option = $formHelper->buildOneOption(array_merge(['value' => $this->getRandomText20(), 'text' => $this->getRandomText20()],$attributes));
+        $option = $formHelper->buildOneOption(array_merge(['value' => TestUtils::getRandomText20(), 'text' => TestUtils::getRandomText20()],$attributes));
         $checked = true;
         //all the attributes must be in the option
         foreach ($attributes as $attribute=>$attributeValue) {
