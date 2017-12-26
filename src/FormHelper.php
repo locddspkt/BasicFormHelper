@@ -213,4 +213,39 @@ class FormHelper {
 
         return false;
     }
+
+
+    /***
+     * @param $fieldName can be false to ignore the name
+     * @param array $options support only one key default or value (the value)
+     * @param array $attributes
+     */
+    public function hidden($fieldName = false, $options = [], $attributes = []) {
+        $definedAttributes = [];
+        //1. build begin
+        $input = '<input';
+        if ($fieldName !== false) {
+            $input .= " name='$fieldName'";
+        }
+
+        $input .= " type='hidden'";
+
+        foreach ($attributes as $attribute => $value) {
+            if (in_array($attribute, $definedAttributes)) continue;
+            $input .= " $attribute='$value'";
+        }
+
+        if (isset($options['value'])) {
+            $input .= " value='" . $options['value'] . "'";
+        }
+        if (isset($options['default'])) {
+            $input .= " value='" . $options['default'] . "'";
+        }
+
+
+        $input .= '/>';
+
+        return $input;
+    }
+
 }

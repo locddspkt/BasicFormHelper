@@ -9,4 +9,7 @@ namespace BasicFormHelper;
  * Time: 7:05 AM
  */
 class TestUtils {
+    public static function getRandomText20() {
+        return CommonFunction::get_random_string(abcdefghijklmnopqrstuvwxyz, 20);
+    }
 }
