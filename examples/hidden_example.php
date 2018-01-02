@@ -13,7 +13,7 @@ Empty hidden <?= $formHelper->hidden() ?><br/>
 Hidden with name only <?= $formHelper->hidden('hidden1') ?><br/>
 Hidden with name and value <?= $formHelper->hidden('hidden2',['value' => 'hidden field']) ?><br/>
 Hidden with name and value ('default') <?= $formHelper->hidden('hidden3',['default' => 'hidden field']) ?><br/>
-Hidden with some attrubes <?= $formHelper->hidden('hidden4',
+Hidden with some attributes <?= $formHelper->hidden('hidden4',
     ['value' => 'hidden data'],
     [
         'class' => 'hidden',

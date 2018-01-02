@@ -19,53 +19,53 @@ include_once __DIR__ . '/phpunit-autoloader.php';
  * Class CommonFunctions_002_Test
  * @package test FormHelper->select
  */
-class FormHelper_Hidden_Test extends TestCase {
+class FormHelper_Input_Test extends TestCase {
     public function setUp() {
     }
 
     public function tearDown() {
     }
 
-    private function baseCheckHidden($input) {
-        $this->assertContains('<input', $input, 'Valid hidden');
-        $this->assertContains("type='hidden'", $input, 'Valid hidden');
-        $this->assertContains("/>", $input, 'Valid hidden');
+    private function baseCheckInput($input) {
+        $this->assertContains('<input', $input, 'Valid input');
+        $this->assertContains("type='text'", $input, 'Valid input');
+        $this->assertContains("/>", $input, 'Valid input');
     }
 
-    public function testBuildHidden() {
+    public function testBuildInput() {
         $formHelper = FormHelper::getInstance();
-        //empty hidden, return the empty hidden input
-        $input = $formHelper->hidden();
-        $this->baseCheckHidden($input);
+        //empty input, return the empty input input
+        $input = $formHelper->input();
+        $this->baseCheckInput($input);
 
-        //hidden with field name = false -> do not generate name
+        //input with field name = false -> do not generate name
         $name = false;
-        $input = $formHelper->hidden($name);
-        $this->baseCheckHidden($input);
+        $input = $formHelper->input($name);
+        $this->baseCheckInput($input);
         $this->assertNotContains(' name=', $input, 'Do not generate name');
 
-        //hidden with random valid name
+        //input with random valid name
         $name = TestUtils::getRandomText20();
-        $input = $formHelper->hidden($name);
-        $this->baseCheckHidden($input);
+        $input = $formHelper->input($name);
+        $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Input has the name');
         $this->assertContains($name, $input);
         $this->assertNotContains('value=', $input, 'Do not have value');
 
-        //hidden with option['value']
+        //input with option['value']
         $name = TestUtils::getRandomText20();
         $value = TestUtils::getRandomText20();
-        $input = $formHelper->hidden($name, ['value' => $value]);
-        $this->baseCheckHidden($input);
+        $input = $formHelper->input($name, ['value' => $value]);
+        $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
         $this->assertContains($name, $input, 'Match the value');
 
-        //hidden with option['default']
+        //input with option['default']
         $name = TestUtils::getRandomText20();
         $value = TestUtils::getRandomText20();
-        $input = $formHelper->hidden($name, ['default' => $value]);
-        $this->baseCheckHidden($input);
+        $input = $formHelper->input($name, ['default' => $value]);
+        $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
         $this->assertContains($name, $input, 'Match the value');
@@ -81,8 +81,8 @@ class FormHelper_Hidden_Test extends TestCase {
             $attributes[$attribute] = TestUtils::getRandomText20();
         }
 
-        $input = $formHelper->hidden($name, ['default' => $value], $attributes);
-        $this->baseCheckHidden($input);
+        $input = $formHelper->input($name, ['default' => $value], $attributes);
+        $this->baseCheckInput($input);
 
         $checked = true;
         //all the attributes must be in the option
