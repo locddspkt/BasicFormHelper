@@ -62,10 +62,12 @@ class FormHelper {
             $empty = $attributes['empty'];
             if ($empty === false) {
                 //do nothing
-            } else if ($empty === true) {
+            }
+            else if ($empty === true) {
                 //add one empty
                 $selectOptionData .= $this->buildOneOption($empty) . PHP_EOL;
-            } else {
+            }
+            else {
                 $selectOptionData .= $this->buildOneOption($empty) . PHP_EOL;
             }
         }
@@ -160,9 +162,9 @@ class FormHelper {
         }
 
         //build options
-        foreach ($item as $key=>$value) {
+        foreach ($item as $key => $value) {
             //do not generate with some defined ['value', 'text', 'selected'];
-            if (in_array($key, ['value','text','selected'])) continue;
+            if (in_array($key, ['value', 'text', 'selected'])) continue;
 
             $optionItemBegin .= " $key='$value'";
         }
@@ -221,7 +223,7 @@ class FormHelper {
      * @param array $attributes
      */
     public function hidden($fieldName = false, $options = [], $attributes = []) {
-        $definedAttributes = [];
+        $definedAttributes = ['type', 'name', 'value'];
         //1. build begin
         $input = '<input';
         if ($fieldName !== false) {
@@ -254,7 +256,7 @@ class FormHelper {
      * @param array $attributes
      */
     public function input($fieldName = false, $options = [], $attributes = []) {
-        $definedAttributes = [];
+        $definedAttributes = ['type', 'name', 'value'];
         //1. build begin
         $input = '<input';
         if ($fieldName !== false) {
@@ -279,6 +281,70 @@ class FormHelper {
         $input .= '/>';
 
         return $input;
+    }
+
+    /***
+     * @param $fieldName can be false to ignore the name
+     * @param array $options support only one key default or value (the value)
+     * @param array $attributes
+     */
+    public function checkbox($fieldName = false, $options = [], $attributes = []) {
+        $definedAttributes = ['type', 'name', 'value', 'checked'];
+        //1. build begin
+        $input = '<input';
+        if ($fieldName !== false) {
+            $input .= " name='$fieldName'";
+        }
+
+        $input .= " type='checkbox'";
+
+        foreach ($attributes as $attribute => $value) {
+            if (in_array($attribute, $definedAttributes)) continue;
+            $input .= " $attribute='$value'";
+        }
+
+        if (isset($options['value'])) {
+            $input .= " value='" . $options['value'] . "'";
+        }
+        if (isset($options['default'])) {
+            $input .= " value='" . $options['default'] . "'";
+        }
+
+
+        $input .= '/>';
+
+        return $input;
+    }
+
+    /***
+     * @param $attributes the array with key=>value
+     * @param array $exceptedKeys the list of item which are not use in attributes
+     */
+    public function generateAttributes($attributes, array $exceptedKeys = []) {
+        if (!is_array($attributes)) return false;
+
+        if (empty($attributes)) $attributes = [];
+        if (empty($exceptedKeys)) $exceptedKeys = [];
+
+        //make all key of attributes lower
+        $lowerAttributes = [];
+        foreach ($attributes as $attribute => $value) {
+            $lowerAttributes[strtolower($attribute)] = $value;
+        }
+        $attributes = $lowerAttributes;
+        $lowerExceptedKeys = [];
+        foreach ($exceptedKeys as $key) {
+            $lowerExceptedKeys[] = strtolower($key);
+        }
+        $exceptedKeys = $lowerExceptedKeys;
+
+        $attributeText = '';
+        foreach ($attributes as $attribute => $value) {
+            if (in_array($attribute, $exceptedKeys)) continue;
+            $attributeText .= " $attribute='$value'";
+        }
+
+        return $attributeText;
     }
 
 }
