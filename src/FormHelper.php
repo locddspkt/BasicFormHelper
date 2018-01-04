@@ -186,6 +186,7 @@ class FormHelper {
     /***
      * @param $list this list of the objects to be used in the select
      * @param null $options (default = ['value' => 'id', 'text' => 'name']
+     * @return array
      */
     public static function convertObjectListToOptions($list, $options = null) {
         if (empty($options)) $options = ['value' => 'id', 'text' => 'name'];
@@ -221,6 +222,7 @@ class FormHelper {
      * @param $fieldName can be false to ignore the name
      * @param array $options support only one key default or value (the value)
      * @param array $attributes
+     * @return string the hidden tag
      */
     public function hidden($fieldName = false, $options = [], $attributes = []) {
         $definedAttributes = ['type', 'name', 'value'];
@@ -232,10 +234,7 @@ class FormHelper {
 
         $input .= " type='hidden'";
 
-        foreach ($attributes as $attribute => $value) {
-            if (in_array($attribute, $definedAttributes)) continue;
-            $input .= " $attribute='$value'";
-        }
+        $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
             $input .= " value='" . $options['value'] . "'";
@@ -254,6 +253,7 @@ class FormHelper {
      * @param $fieldName can be false to ignore the name
      * @param array $options support only one key default or value (the value)
      * @param array $attributes
+     * @return string the input tag
      */
     public function input($fieldName = false, $options = [], $attributes = []) {
         $definedAttributes = ['type', 'name', 'value'];
@@ -265,10 +265,7 @@ class FormHelper {
 
         $input .= " type='text'";
 
-        foreach ($attributes as $attribute => $value) {
-            if (in_array($attribute, $definedAttributes)) continue;
-            $input .= " $attribute='$value'";
-        }
+        $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
             $input .= " value='" . $options['value'] . "'";
@@ -286,30 +283,56 @@ class FormHelper {
     /***
      * @param $fieldName can be false to ignore the name
      * @param array $options support only one key default or value (the value)
+     *  $options = [checked,disabled,hiddenField]
+     *      default hiddenField = 0 --> add one hidden with the same name and the specific value
      * @param array $attributes
+     * @return string checkbox tag
      */
     public function checkbox($fieldName = false, $options = [], $attributes = []) {
-        $definedAttributes = ['type', 'name', 'value', 'checked'];
+        $definedAttributes = ['type', 'name', 'value', 'checked', 'disabled', 'hiddenField'];
+        //check the hidden field first
+        if (!isset($options['hiddenField'])) $options['hiddenField'] = '0';
+        $input = '';
+        if ($options['hiddenField'] !== false) {
+            $hiddenValue = $options['hiddenField'];
+            $input .= $this->hidden($fieldName,['value' => $hiddenValue]) . PHP_EOL;
+        }
+
         //1. build begin
-        $input = '<input';
+        $input .= '<input';
         if ($fieldName !== false) {
             $input .= " name='$fieldName'";
         }
 
         $input .= " type='checkbox'";
 
-        foreach ($attributes as $attribute => $value) {
-            if (in_array($attribute, $definedAttributes)) continue;
-            $input .= " $attribute='$value'";
-        }
+        $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
             $input .= " value='" . $options['value'] . "'";
         }
-        if (isset($options['default'])) {
+        else if (isset($options['default'])) {
             $input .= " value='" . $options['default'] . "'";
         }
+        else {
+            //if value,default is not set, use 1 instead
+            $input .= " value='1'";
+        }
 
+
+
+        if (isset($options['checked'])) {
+            if (!empty($options['checked'])) {
+                //true, 1, any string
+                $input .= " checked";
+            }
+        }
+        if (isset($options['disabled'])) {
+            if (!empty($options['disabled'])) {
+                //true, 1, any string
+                $input .= " disabled";
+            }
+        }
 
         $input .= '/>';
 
@@ -319,6 +342,7 @@ class FormHelper {
     /***
      * @param $attributes the array with key=>value
      * @param array $exceptedKeys the list of item which are not use in attributes
+     * @return string of the attributes
      */
     public function generateAttributes($attributes, array $exceptedKeys = []) {
         if (!is_array($attributes)) return false;
@@ -346,5 +370,4 @@ class FormHelper {
 
         return $attributeText;
     }
-
 }
