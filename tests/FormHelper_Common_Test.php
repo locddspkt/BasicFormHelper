@@ -21,6 +21,7 @@ include_once __DIR__ . '/phpunit-autoloader.php';
  * Class CommonFunctions_002_Test
  * @package test FormHelper->select
  */
+
 class FormHelper_Common_Test extends TestCase {
     public function setUp() {
     }
@@ -29,6 +30,7 @@ class FormHelper_Common_Test extends TestCase {
     }
 
     public function testGenerateAttributes() {
+
         $formHelper = FormHelper::getInstance();
         //empty input, return the empty input input
 
@@ -103,9 +105,39 @@ class FormHelper_Common_Test extends TestCase {
             //do not content the last key
             $this->assertNotContains($rejectedKeys[$keyIndex] . '=', $attributeText);
 
+
+
+            //test with attribute has some specific character
+            $count = random_int(0, 100);
+            $attributes = [];
+            for ($i = 1; $i <= $count; $i++) {
+                do {
+                    $attribute = TestUtils::getRandomText20();
+                } while (in_array($attribute, array_keys($attributes)));
+
+                $attributeValue = TestUtils::getRandomText20('/\\"\'!@#$^&*()_+=');
+//                var_dump($attributeValue);
+                $attributes[$attribute] = $attributeValue;
+            }
+
+            $attributeText = $formHelper->generateAttributes($attributes);
+
+            var_dump($attributeText);
+            $checked = true;
+            //all the attributes must be in the option
+            foreach ($attributes as $attribute => $attributeValue) {
+                //the value get with htmlspecialchars method
+                if (strpos($attributeText, $attribute) === false || strpos($attributeText, htmlspecialchars($attributeValue)) === false) {
+                    $checked = false;
+                    break;
+                }
+            }
+
+            $this->assertTrue($checked, 'Match all the attributes');
         }
         catch (Exception $e) {
-            $this->assertEmpty(false, 'An error occurs');
+            echo 'An error occurs:' . $e->getMessage();
+            $this->assertEmpty(false, 'An error occurs:' . $e->getMessage());
         }
 
 
