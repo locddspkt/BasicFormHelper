@@ -55,20 +55,24 @@ class FormHelper_Input_Test extends TestCase {
         //input with option['value']
         $name = TestUtils::getRandomText20();
         $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
         $input = $formHelper->input($name, ['value' => $value]);
         $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
-        $this->assertContains($name, $input, 'Match the value');
+        $this->assertContains($name, $input, 'Match the name');
+        $this->assertContains($checkedValue, $input, 'Match the value');
 
         //input with option['default']
         $name = TestUtils::getRandomText20();
         $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
         $input = $formHelper->input($name, ['default' => $value]);
         $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
         $this->assertContains($name, $input, 'Match the value');
+        $this->assertContains($checkedValue, $input, 'Match the value');
 
         //get some random attributes
         $count = random_int(0, 10);

@@ -65,23 +65,27 @@ class FormHelper_Checkbox_Test extends TestCase {
 
         //input with option['value']
         $name = TestUtils::getRandomText20();
-        $value = TestUtils::getRandomText20();
+        $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
         $input = $formHelper->checkbox($name, ['value' => $value]);
         $this->baseCheckCheckbox($input);
         $this->baseCheckHidden($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
         $this->assertContains($name, $input, 'Match the value');
+        $this->assertContains($checkedValue, $input, 'Match the value');
 
         //input with option['default']
         $name = TestUtils::getRandomText20();
-        $value = TestUtils::getRandomText20();
+        $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
         $input = $formHelper->checkbox($name, ['default' => $value]);
         $this->baseCheckCheckbox($input);
         $this->baseCheckHidden($input);
         $this->assertContains(' name=', $input, 'Has name');
         $this->assertContains(' value=', $input, 'Has value');
         $this->assertContains($name, $input, 'Match the value');
+        $this->assertContains($checkedValue, $input, 'Match the value');
 
         //get some random attributes
         $count = random_int(0, 10);
@@ -115,11 +119,13 @@ class FormHelper_Checkbox_Test extends TestCase {
         $this->assertNotContains("type='hidden'", $input, 'Do not have hidden field');
 
         //hidden field with specific value
-        $hiddenFieldValue = TestUtils::getRandomText20();
-        var_dump($hiddenFieldValue);
+        $hiddenFieldValue = TestUtils::getRandomValueText20();
+
         $input = $formHelper->checkbox($name, ['default' => $value, 'hiddenField' => $hiddenFieldValue], $attributes);
         $this->baseCheckCheckbox($input);
         $this->baseCheckHidden($input);
-        $this->assertContains("value='$hiddenFieldValue'", $input, "Has hidden field value");
+
+        $hiddenFieldValueCheck = htmlspecialchars($hiddenFieldValue, ENT_QUOTES);
+        $this->assertContains("value='$hiddenFieldValueCheck'", $input, "Has hidden field value");
     }
 }

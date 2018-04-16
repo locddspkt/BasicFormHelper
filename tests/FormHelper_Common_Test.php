@@ -122,7 +122,6 @@ class FormHelper_Common_Test extends TestCase {
 
             $attributeText = $formHelper->generateAttributes($attributes);
 
-            var_dump($attributeText);
             $checked = true;
             //all the attributes must be in the option
             foreach ($attributes as $attribute => $attributeValue) {

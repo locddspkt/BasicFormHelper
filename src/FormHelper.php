@@ -145,9 +145,10 @@ class FormHelper {
         $optionItemBegin = '<option ';
 
         $value = null;
+        $originalValue = null;
         if (isset($item['value'])) {
-            $value = $item['value'];
-            $value = htmlspecialchars($value,ENT_QUOTES);
+            $originalValue = $item['value'];
+            $value = htmlspecialchars($originalValue,ENT_QUOTES);
 
             $optionItemBegin .= " value='$value'";
         }
@@ -160,7 +161,7 @@ class FormHelper {
             else if ($selected === false) {
                 //do nothing
             }
-            else if ($selected == $value) {
+            else if ($selected == $originalValue) {
                 $optionItemBegin .= ' selected ';
             }
         }

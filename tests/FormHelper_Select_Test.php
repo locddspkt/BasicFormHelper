@@ -108,8 +108,8 @@ class FormHelper_Select_Test extends TestCase {
             $options[] = TestUtils::getRandomText20();
         }
         $select = $formHelper->select($name, $options);
-        $this->assertContains('<option', $select, 'Do not have any options');
-        $this->assertContains('</option>', $select, 'Do not have any options');
+        $this->assertContains('<option', $select, 'Have some options');
+        $this->assertContains('</option>', $select, 'Have some any options');
 
         //options has no key
         $checked = true;
@@ -138,7 +138,7 @@ class FormHelper_Select_Test extends TestCase {
         $options = [];
         for ($i=1;$i<=$optionCount;$i++) {
             do {
-                $key = TestUtils::getRandomText20();
+                $key = TestUtils::getRandomValueText20();
                 $text = TestUtils::getRandomText20();
             } while (in_array($key, array_keys($options)) || in_array($text, $options));
             $options[$key] = $text;
@@ -148,8 +148,10 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertSame($optionCount, substr_count($select, ' value='),'Same items with options');
 
         $checked = true;
+        var_dump($select);
         foreach ($options as $value=>$text) {
-            if (strpos($select,"$value") === false || strpos($select,"$text") === false) {
+            $checkedValue = htmlspecialchars($value, ENT_QUOTES);
+            if (strpos($select,"$checkedValue") === false || strpos($select,"$text") === false) {
                 $checked = false;
                 break;
             }
@@ -168,7 +170,7 @@ class FormHelper_Select_Test extends TestCase {
         $optionsInSelect = [];
         for ($i=1;$i<=$optionCount;$i++) {
             do {
-                $key = TestUtils::getRandomText20();
+                $key = TestUtils::getRandomValueText20();
                 $text = TestUtils::getRandomText20();
             } while (in_array($key, array_keys($options)) || in_array($text, $options));
             $options[$key] = $text;
@@ -182,8 +184,9 @@ class FormHelper_Select_Test extends TestCase {
         $checked = true;
         foreach ($optionsInSelect as $item) {
             $value = $item['value'];
+            $checkedValue = htmlspecialchars($value, ENT_QUOTES);
             $text = $item['text'];
-            if (strpos($select,"$value") === false || strpos($select,"$text") === false) {
+            if (strpos($select,"$checkedValue") === false || strpos($select,"$text") === false) {
                 $checked = false;
                 break;
             }
@@ -226,34 +229,43 @@ class FormHelper_Select_Test extends TestCase {
         $this->assertNotContains('></option>', $option, 'Option has text');
 
         //item = array value only --> empty valuable
-        $option = $formHelper->buildOneOption(['value' => TestUtils::getRandomText20()]);
+        $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
+        $option = $formHelper->buildOneOption(['value' => $value]);
         $this->assertContains('value=', $option, 'Option has value');
         $this->assertContains('></option>', $option, 'Option do not have text');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //item with selected
-        $value = TestUtils::getRandomText20();
+        $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
         do {
             $text = TestUtils::getRandomText20(); //get text until not same
         } while ($text == $value);
         //selected = false -> do not add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => false]);
         $this->assertNotContains(' selected', $option, 'Not selected');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //selected = true -> add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => true]);
         $this->assertContains(' selected', $option, 'Selected');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //selected != value != $text -> do not add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => $value . $text]);
         $this->assertNotContains(' selected', $option, 'Not equal');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //selected = text != value -> do not add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => $text]);
         $this->assertNotContains(' selected', $option, 'Not equal');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //selected = value -> add selected
         $option = $formHelper->buildOneOption(['value' => $value, 'text' => $text, 'selected' => $value]);
         $this->assertContains(' selected', $option, 'Not equal');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //get some random attributes
         $count = random_int(0,10);
@@ -266,7 +278,10 @@ class FormHelper_Select_Test extends TestCase {
             $attributes[$attribute] = TestUtils::getRandomText20();
         }
 
-        $option = $formHelper->buildOneOption(array_merge(['value' => TestUtils::getRandomText20(), 'text' => TestUtils::getRandomText20()],$attributes));
+        $value = TestUtils::getRandomValueText20();
+        $checkedValue = htmlspecialchars($value, ENT_QUOTES);
+
+        $option = $formHelper->buildOneOption(array_merge(['value' => $value, 'text' => TestUtils::getRandomText20()],$attributes));
         $checked = true;
         //all the attributes must be in the option
         foreach ($attributes as $attribute=>$attributeValue) {
@@ -277,13 +292,9 @@ class FormHelper_Select_Test extends TestCase {
         }
 
         $this->assertTrue($checked, 'Match all thev attributes');
+        $this->assertContains($checkedValue, $option, 'Match the value');
 
         //for test build invalid on travis-ci.org
 //        $this->assertTrue(false, 'Invalid test');
     }
-
-    private function getRandomText20() {
-        return CommonFunction::get_random_string(abcdefghijklmnopqrstuvwxyz,20);
-    }
-
 }
