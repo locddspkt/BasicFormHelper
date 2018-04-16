@@ -31,8 +31,8 @@ class FormHelper {
      *      string: -> an empty value with text = string
      *      array['value','text','attrib',...] -> an option
      */
-    public function select($fieldName, $options = [], $attributes = []) {
-        $definedAttributes = ['selected', 'empty'];
+    public function select($fieldName, $options = array(), $attributes = array()) {
+        $definedAttributes = array('selected', 'empty');
 
         //1. build begin
         $selectBegin = '<select ';
@@ -42,6 +42,8 @@ class FormHelper {
 
         foreach ($attributes as $attribute => $value) {
             if (in_array($attribute, $definedAttributes)) continue;
+            $value = htmlspecialchars($value,ENT_QUOTES);
+
             $selectBegin .= " $attribute='$value' ";
         }
 
@@ -145,6 +147,8 @@ class FormHelper {
         $value = null;
         if (isset($item['value'])) {
             $value = $item['value'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+
             $optionItemBegin .= " value='$value'";
         }
 
@@ -165,6 +169,7 @@ class FormHelper {
         foreach ($item as $key => $value) {
             //do not generate with some defined ['value', 'text', 'selected'];
             if (in_array($key, ['value', 'text', 'selected'])) continue;
+            $value = htmlspecialchars($value,ENT_QUOTES);
 
             $optionItemBegin .= " $key='$value'";
         }
@@ -237,10 +242,16 @@ class FormHelper {
         $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
-            $input .= " value='" . $options['value'] . "'";
+            $value = $options['value'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+
+            $input .= " value='$value'";
         }
         if (isset($options['default'])) {
-            $input .= " value='" . $options['default'] . "'";
+            $value = $options['default'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+
+            $input .= " value='$value'";
         }
 
 
@@ -268,10 +279,14 @@ class FormHelper {
         $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
-            $input .= " value='" . $options['value'] . "'";
+            $value = $options['value'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
         }
         if (isset($options['default'])) {
-            $input .= " value='" . $options['default'] . "'";
+            $value = $options['default'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
         }
 
 
@@ -279,6 +294,36 @@ class FormHelper {
 
         return $input;
     }
+
+    public function password($fieldName = false, $options = [], $attributes = []) {
+        $definedAttributes = ['type', 'name', 'value'];
+        //1. build begin
+        $input = '<input';
+        if ($fieldName !== false) {
+            $input .= " name='$fieldName'";
+        }
+
+        $input .= " type='password'";
+
+        $input .= $this->generateAttributes($attributes, $definedAttributes);
+
+        if (isset($options['value'])) {
+            $value = $options['value'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
+        }
+        if (isset($options['default'])) {
+            $value = $options['default'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
+        }
+
+
+        $input .= '/>';
+
+        return $input;
+    }
+
 
     /***
      * @param $fieldName can be false to ignore the name
@@ -309,10 +354,14 @@ class FormHelper {
         $input .= $this->generateAttributes($attributes, $definedAttributes);
 
         if (isset($options['value'])) {
-            $input .= " value='" . $options['value'] . "'";
+            $value = $options['value'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
         }
         else if (isset($options['default'])) {
-            $input .= " value='" . $options['default'] . "'";
+            $value = $options['default'];
+            $value = htmlspecialchars($value,ENT_QUOTES);
+            $input .= " value='$value'";
         }
         else {
             //if value,default is not set, use 1 instead
@@ -345,6 +394,7 @@ class FormHelper {
      * @return string of the attributes
      */
     public function generateAttributes($attributes, array $exceptedKeys = []) {
+        //todo: the attrib with special charactors doesn't work
         if (!is_array($attributes)) return false;
 
         if (empty($attributes)) $attributes = [];
@@ -365,6 +415,10 @@ class FormHelper {
         $attributeText = '';
         foreach ($attributes as $attribute => $value) {
             if (in_array($attribute, $exceptedKeys)) continue;
+
+            //make sure the value is replaced the ' to \'
+            $value = htmlspecialchars($value,ENT_QUOTES);
+
             $attributeText .= " $attribute='$value'";
         }
 
