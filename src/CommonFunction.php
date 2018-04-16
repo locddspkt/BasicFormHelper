@@ -3,7 +3,9 @@
 namespace BasicFormHelper;
 
 if (!defined('abcdefghijklmnopqrstuvwxyz')) define('abcdefghijklmnopqrstuvwxyz', 'abcdefghijklmnopqrstuvwxyz');
+if (!defined('abcdefghijklmnopqrstuvwxyz_special')) define('abcdefghijklmnopqrstuvwxyz_special', 'abcdefghijklmnopqrstuvwxyz\'"');
 if (!defined('ABCDEFGHIJKLMNOPQRSTUVWXYZ')) define('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+if (!defined('ABCDEFGHIJKLMNOPQRSTUVWXYZ_special')) define('ABCDEFGHIJKLMNOPQRSTUVWXYZ_special', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ\'"');
 if (!defined('_0123456789')) define('_0123456789', '_0123456789');
 
 class CommonFunction {

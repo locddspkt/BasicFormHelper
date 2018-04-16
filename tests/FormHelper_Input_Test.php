@@ -54,7 +54,7 @@ class FormHelper_Input_Test extends TestCase {
 
         //input with option['value']
         $name = TestUtils::getRandomText20();
-        $value = TestUtils::getRandomText20();
+        $value = TestUtils::getRandomValueText20();
         $input = $formHelper->input($name, ['value' => $value]);
         $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');
@@ -63,7 +63,7 @@ class FormHelper_Input_Test extends TestCase {
 
         //input with option['default']
         $name = TestUtils::getRandomText20();
-        $value = TestUtils::getRandomText20();
+        $value = TestUtils::getRandomValueText20();
         $input = $formHelper->input($name, ['default' => $value]);
         $this->baseCheckInput($input);
         $this->assertContains(' name=', $input, 'Has name');

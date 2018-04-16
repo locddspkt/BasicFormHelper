@@ -15,4 +15,10 @@ class TestUtils {
     public static function getRandomText20($keys = abcdefghijklmnopqrstuvwxyz) {
         return CommonFunction::get_random_string($keys, 20);
     }
+
+    public static function getRandomValueText20($keys = abcdefghijklmnopqrstuvwxyz_special) {
+        return CommonFunction::get_random_string($keys, 20);
+    }
+
+
 }

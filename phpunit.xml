@@ -1,7 +1,12 @@
 <phpunit bootstrap="src/autoloader.php">
     <testsuites>
         <testsuite name="project">
-            <directory>tests</directory>
+            <file>tests/FormHelper_Common_Test.php</file>
         </testsuite>
+
+        <testsuite name="working">
+            <file>tests/FormHelper_Input_Test.php</file>
+        </testsuite>
+
     </testsuites>
 </phpunit>
